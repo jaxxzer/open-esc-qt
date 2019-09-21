@@ -32,6 +32,7 @@ void MainWindow::on_serialConnectButton_clicked()
                 if (device->open()) {
                     ui->label->setText(availablePort.portName());
                     ui->serialConnectButton->setText("disconnect");
+                    device->requestDeviceInformation();
                 }
             }
         }

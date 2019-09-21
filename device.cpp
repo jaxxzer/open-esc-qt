@@ -17,6 +17,16 @@ bool Device::open()
     return handle->open();
 }
 
+void Device::requestProtocolVersion()
+{
+    requestMessage(CommonId::PROTOCOL_VERSION);
+}
+
+void Device::requestDeviceInformation()
+{
+    requestMessage(CommonId::DEVICE_INFORMATION);
+}
+
 void Device::requestMessage(uint16_t messageId)
 {
     common_general_request msg;
@@ -35,14 +45,18 @@ void Device::consumeData()
     }
 }
 
-void requestDeviceInformation()
-{
-
-}
-
 void Device::write(uint8_t *data, uint16_t length)
 {
     if (handle) {
         handle->write(data, length);
+    }
+}
+
+void Device::handleMessage(ping_message* message)
+{
+    switch (message->message_id()) {
+    case CommonId::DEVICE_INFORMATION:
+        device_id = message->source_device_id();
+        device_type = ((common_device_information*)message)->device_type();
     }
 }

@@ -21,7 +21,10 @@ public:
 
     void consumeData();
 
+    uint8_t device_type;
     uint8_t device_id;
+
+    void handleMessage(ping_message* message);
 
 private:
     void write(uint8_t* data, uint16_t length);
