@@ -12,12 +12,16 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt5 COMPONENTS SerialPort REQUIRED)
 
 add_executable(ping-qt
   main.cpp
   mainwindow.cpp
   mainwindow.h
   mainwindow.ui
+  ping-device.h
+  port-scan.h
+  port-scan.cpp
 )
 
-target_link_libraries(ping-qt PRIVATE Qt5::Widgets)
+target_link_libraries(ping-qt PRIVATE Qt5::Widgets Qt5::SerialPort)
