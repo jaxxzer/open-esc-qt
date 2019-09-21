@@ -30,5 +30,7 @@ private:
 
     PortScanner portScanner;
     Device* device;
+
+    void handleNewDeviceData();
 };
 #endif // MAINWINDOW_H

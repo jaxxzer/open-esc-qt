@@ -29,6 +29,7 @@ void MainWindow::on_serialConnectButton_clicked()
             if (!device) {
                 portScanner.stopScanning();
                 device = new Device(availablePort);
+                connect(device, &Device::newData, this, &MainWindow::handleNewDeviceData);
                 if (device->open()) {
                     ui->label->setText(availablePort.portName());
                     ui->serialConnectButton->setText("disconnect");
@@ -37,6 +38,13 @@ void MainWindow::on_serialConnectButton_clicked()
             }
         }
     }
+
+
+}
+
+void MainWindow::handleNewDeviceData()
+{
+    ui->label->setText(QString::number(device->device_type));
 }
 
 void MainWindow::onPortScanFinished(QList<QSerialPortInfo> availablePorts)
