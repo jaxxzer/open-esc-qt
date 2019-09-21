@@ -15,8 +15,6 @@ public:
 
     QSerialPort* serialPort;
 
-signals:
-    void newData(QByteArray data);
 };
 
 #endif // PINGDEVICE_H

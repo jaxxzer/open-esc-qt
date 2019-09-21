@@ -15,16 +15,18 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt5 COMPONENTS SerialPort REQUIRED)
 
 add_executable(ping-qt
-  main.cpp
-  mainwindow.cpp
-  mainwindow.h
-  mainwindow.ui
-  com-handle.h
-  com-handle.cpp
-  port-scanner.h
-  port-scanner.cpp
-  com-parser.h
-  com-parser.cpp
+    com-handle.cpp
+    com-handle.h
+    com-parser.cpp
+    com-parser.h
+    device.cpp
+    device.h
+    main.cpp
+    mainwindow.cpp
+    mainwindow.h
+    mainwindow.ui
+    port-scanner.cpp
+    port-scanner.h
 )
 
 target_link_libraries(ping-qt PRIVATE Qt5::Widgets Qt5::SerialPort)

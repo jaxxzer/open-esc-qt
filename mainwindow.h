@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 #include <port-scanner.h>
-#include <com-handle.h>
+#include <device.h>
 #include <QList>
 #include <QSerialPortInfo>
 
@@ -29,6 +29,6 @@ private:
     Ui::MainWindow *ui;
 
     PortScanner portScanner;
-    ComHandle* comHandle;
+    Device* device;
 };
 #endif // MAINWINDOW_H

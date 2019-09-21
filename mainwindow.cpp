@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , comHandle(nullptr)
+    , device(nullptr)
 {
     ui->setupUi(this);
 
@@ -16,8 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
-    if (comHandle) {
-        delete comHandle;
+    if (device) {
+        delete device;
     }
 }
 
@@ -26,9 +26,9 @@ void MainWindow::on_serialConnectButton_clicked()
 {
     for (auto availablePort : portScanner.availablePorts) {
         if (availablePort.portName() == ui->serialComboBox->currentText()) {
-            if (!comHandle) {
+            if (!device) {
                 portScanner.stopScanning();
-                comHandle = new ComHandle(availablePort);
+                device = new Device(availablePort);
                 ui->label->setText(availablePort.portName());
                 ui->serialConnectButton->setText("disconnect");
             }
