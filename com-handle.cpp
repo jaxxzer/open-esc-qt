@@ -16,3 +16,10 @@ void ComHandle::close()
         serialPort->close();
     }
 }
+
+void ComHandle::write(uint8_t* data, uint16_t length)
+{
+    if (serialPort) {
+        serialPort->write((char*)data, length);
+    }
+}

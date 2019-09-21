@@ -14,6 +14,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt5 COMPONENTS SerialPort REQUIRED)
 
+include_directories(${PROJECT_SOURCE_DIR}/lib/ping-cpp/src/message)
+
 add_executable(ping-qt
     com-handle.cpp
     com-handle.h

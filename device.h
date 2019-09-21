@@ -5,7 +5,7 @@
 #include <com-parser.h>
 #include <QSerialPort>
 #include <QObject>
-
+#include <inttypes.h>
 class Device : public QObject
 {
     Q_OBJECT
@@ -13,10 +13,21 @@ public:
     Device(QSerialPortInfo info);
     ComParser parser;
     ComHandle* handle;
+    bool open();
+
+    void requestDeviceInformation();
+    void requestProtocolVersion();
+    void requestMessage(uint16_t messageId);
 
     void consumeData();
+
+    uint8_t device_id;
+
+private:
+    void write(uint8_t* data, uint16_t length);
+
 signals:
-    void dataUpdate();
+    void newData();
 };
 
 #endif // DEVICE_H

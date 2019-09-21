@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include <QByteArray>
 
+#include <ping-parser.h>
 
 class ComParser
 {
@@ -18,6 +19,7 @@ public:
     } ParseState;
 
     ParseState parseByte(uint8_t b);
+    PingParser parser;
 };
 
 #endif // COMPARSER_H

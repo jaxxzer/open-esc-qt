@@ -13,6 +13,8 @@ public:
     bool open();
     void close();
 
+    void write(uint8_t* data, uint16_t length);
+
     QSerialPort* serialPort;
 
 };
