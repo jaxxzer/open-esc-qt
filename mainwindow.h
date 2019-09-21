@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include <port-scanner.h>
+#include <com-handle.h>
 #include <QList>
 #include <QSerialPortInfo>
 
@@ -20,14 +21,14 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
-    void on_pushButton_clicked(bool checked);
-
+//    void on_serialComboBox_activated(QString portName);
+    void on_serialConnectButton_clicked();
     void onPortScanFinished(QList<QSerialPortInfo>);
 
 private:
     Ui::MainWindow *ui;
 
     PortScanner portScanner;
+    ComHandle* comHandle;
 };
 #endif // MAINWINDOW_H

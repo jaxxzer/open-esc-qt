@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="serialConnectButton">
     <property name="geometry">
      <rect>
       <x>710</x>
@@ -40,7 +40,7 @@
      <string>id</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="serialComboBox">
     <property name="geometry">
      <rect>
       <x>488</x>

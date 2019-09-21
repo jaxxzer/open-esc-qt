@@ -1,11 +1,10 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include <port-scanner.h>
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , comHandle(nullptr)
 {
     ui->setupUi(this);
 
@@ -17,23 +16,30 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    if (comHandle) {
+        delete comHandle;
+    }
 }
 
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_serialConnectButton_clicked()
 {
-    ui->label->setText("fuck");
-}
-
-void MainWindow::on_pushButton_clicked(bool checked)
-{
-
+    for (auto availablePort : portScanner.availablePorts) {
+        if (availablePort.portName() == ui->serialComboBox->currentText()) {
+            if (!comHandle) {
+                portScanner.stopScanning();
+                comHandle = new ComHandle(availablePort);
+                ui->label->setText(availablePort.portName());
+                ui->serialConnectButton->setText("disconnect");
+            }
+        }
+    }
 }
 
 void MainWindow::onPortScanFinished(QList<QSerialPortInfo> availablePorts)
 {
-    ui->comboBox->clear();
+    ui->serialComboBox->clear();
     for (auto portInfo : availablePorts) {
-        ui->comboBox->addItem(portInfo.portName());
+        ui->serialComboBox->addItem(portInfo.portName());
     }
 }
