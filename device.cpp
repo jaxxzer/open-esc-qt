@@ -4,6 +4,7 @@
 #include <QSerialPort>
 
 #include <ping-message-common.h>
+#include <ping-message-openesc.h>
 
 Device::Device(QSerialPortInfo info)
 {
@@ -42,11 +43,10 @@ void Device::consumeData()
         if (parser.parseByte(b) == ComParser::NEW_MESSAGE) {
             switch (parser.parser.rxMessage.message_id()) {
             case CommonId::DEVICE_INFORMATION:
-                device_type = ((common_device_information)parser.parser.rxMessage).device_type();
+                 device_type = ((common_device_information)parser.parser.rxMessage).device_type();
             }
 
             device_id = parser.parser.rxMessage.source_device_id();
-            emit newData();
         }
     }
 }
@@ -64,5 +64,26 @@ void Device::handleMessage(ping_message* message)
     case CommonId::DEVICE_INFORMATION:
         device_id = message->source_device_id();
         device_type = ((common_device_information*)message)->device_type();
+        break;
+    case OpenescId::STATE:
+    {
+
+        openesc_state* msg = (openesc_state*)message;
+        phaseA = msg->phaseA();
+        phaseB = msg->phaseB();
+        phaseC = msg->phaseC();
+        neutral = msg->neutral();
+        throttle = msg->throttle();
+        voltage = msg->voltage();
+        current = msg->current();
+        commutationFrequency = msg->commutation_frequency();
+
     }
+        break;
+    default:
+        break;
+
+    }
+    emit newData();
+
 }

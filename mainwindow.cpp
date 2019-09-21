@@ -38,8 +38,6 @@ void MainWindow::on_serialConnectButton_clicked()
             }
         }
     }
-
-
 }
 
 void MainWindow::handleNewDeviceData()

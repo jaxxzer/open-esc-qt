@@ -26,6 +26,8 @@ public:
 
     void handleMessage(ping_message* message);
 
+    uint16_t phaseA, phaseB, phaseC, neutral, current, voltage, throttle, commutationFrequency;
+
 private:
     void write(uint8_t* data, uint16_t length);
 
