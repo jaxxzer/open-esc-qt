@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include <port-scan.h>
+#include <port-scanner.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

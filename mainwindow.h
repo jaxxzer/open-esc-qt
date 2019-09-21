@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 
-#include <port-scan.h>
+#include <port-scanner.h>
 #include <QList>
 #include <QSerialPortInfo>
 

@@ -19,9 +19,12 @@ add_executable(ping-qt
   mainwindow.cpp
   mainwindow.h
   mainwindow.ui
-  ping-device.h
-  port-scan.h
-  port-scan.cpp
+  com-handle.h
+  com-handle.cpp
+  port-scanner.h
+  port-scanner.cpp
+  com-parser.h
+  com-parser.cpp
 )
 
 target_link_libraries(ping-qt PRIVATE Qt5::Widgets Qt5::SerialPort)

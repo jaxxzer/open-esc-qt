@@ -1,4 +1,4 @@
-#include <port-scan.h>
+#include <port-scanner.h>
 
 PortScanner::PortScanner()
 {
