@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt5 COMPONENTS SerialPort REQUIRED)
+find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/lib/ping-cpp/src/message)
 
@@ -29,6 +30,8 @@ add_executable(open-esc-qt
     mainwindow.ui
     port-scanner.cpp
     port-scanner.h
+    qcustomplot.h
+    qcustomplot.cpp
 )
 
-target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort)
+target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort Qt5::PrintSupport)

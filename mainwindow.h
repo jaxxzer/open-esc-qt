@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+#include <qcustomplot.h>
 #include <port-scanner.h>
 #include <device.h>
 #include <QList>

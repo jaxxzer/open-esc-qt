@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&portScanner, &PortScanner::scanUpdate, this, &MainWindow::onPortScanFinished);
     portScanner.startScanning(500);
 
+    ui->customPlot->addGraph();
+
 }
 
 MainWindow::~MainWindow()
