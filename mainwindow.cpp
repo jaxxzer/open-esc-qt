@@ -42,7 +42,7 @@ void MainWindow::on_serialConnectButton_clicked()
 
 void MainWindow::handleNewDeviceData()
 {
-    ui->label->setText(QString::number(device->device_type));
+    ui->label->setText(QString::number(device->phaseA));
 }
 
 void MainWindow::onPortScanFinished(QList<QSerialPortInfo> availablePorts)

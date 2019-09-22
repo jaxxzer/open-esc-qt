@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(ping-qt LANGUAGES CXX)
+project(open-esc-qt LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -16,7 +16,7 @@ find_package(Qt5 COMPONENTS SerialPort REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/lib/ping-cpp/src/message)
 
-add_executable(ping-qt
+add_executable(open-esc-qt
     com-handle.cpp
     com-handle.h
     com-parser.cpp
@@ -31,4 +31,4 @@ add_executable(ping-qt
     port-scanner.h
 )
 
-target_link_libraries(ping-qt PRIVATE Qt5::Widgets Qt5::SerialPort)
+target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort)

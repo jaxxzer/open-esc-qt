@@ -41,12 +41,14 @@ void Device::consumeData()
     auto data = handle->serialPort->readAll();
     for (auto b : data) {
         if (parser.parseByte(b) == ComParser::NEW_MESSAGE) {
+            handleMessage(&parser.parser.rxMessage);
             switch (parser.parser.rxMessage.message_id()) {
             case CommonId::DEVICE_INFORMATION:
                  device_type = ((common_device_information)parser.parser.rxMessage).device_type();
             }
 
             device_id = parser.parser.rxMessage.source_device_id();
+            emit newData();
         }
     }
 }
