@@ -8,6 +8,7 @@
 #include <device.h>
 #include <QList>
 #include <QSerialPortInfo>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -32,6 +33,7 @@ private:
     PortScanner portScanner;
     Device* device;
 
+    QVector<double> x, phaseASamples, phaseBSamples, phaseCSamples;
     void handleNewDeviceData();
 };
 #endif // MAINWINDOW_H

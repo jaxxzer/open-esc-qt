@@ -12,7 +12,15 @@ MainWindow::MainWindow(QWidget *parent)
     portScanner.startScanning(500);
 
     ui->customPlot->addGraph();
-
+    ui->customPlot->graph(0)->setPen(QColor(Qt::red));
+    QVector <double> x(200), y(200);
+    for (uint16_t i = 0; i < 200; i++) {
+        x[i] = i;
+        y[i] = 2*i;
+    }
+    ui->customPlot->graph(0)->setData(x, y);
+    ui->customPlot->graph(0)->rescaleAxes();
+    ui->customPlot->replot();
 }
 
 MainWindow::~MainWindow()
@@ -45,6 +53,20 @@ void MainWindow::on_serialConnectButton_clicked()
 void MainWindow::handleNewDeviceData()
 {
     ui->label->setText(QString::number(device->phaseA));
+
+    static QTime time(QTime::currentTime());
+    // calculate two new data points:
+    double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
+    static double lastPointKey = 0;
+    if (key-lastPointKey > 0.002) // at most add point every 2 ms
+    {
+        ui->customPlot->graph(0)->addData(key, device->phaseA);
+        lastPointKey = key;
+        ui->customPlot->yAxis->rescale();
+        ui->customPlot->xAxis->setRange(key, 5, Qt::AlignRight);
+        ui->customPlot->replot();
+    }
+
 }
 
 void MainWindow::onPortScanFinished(QList<QSerialPortInfo> availablePorts)
