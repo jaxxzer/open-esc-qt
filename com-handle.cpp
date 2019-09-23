@@ -7,7 +7,7 @@ ComHandle::ComHandle(QSerialPortInfo p)
 
 bool ComHandle::open()
 {
-    serialPort->setBaudRate(115200);
+    serialPort->setBaudRate(1000000);
     return serialPort->open(QIODevice::ReadWrite);
 
 }

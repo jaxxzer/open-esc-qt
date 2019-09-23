@@ -12,15 +12,22 @@ MainWindow::MainWindow(QWidget *parent)
     portScanner.startScanning(500);
 
     ui->customPlot->addGraph();
+    ui->customPlot->addGraph();
+    ui->customPlot->addGraph();
+    ui->customPlot->addGraph();
+    ui->customPlot->addGraph();
+    ui->customPlot->addGraph();
+    ui->customPlot->addGraph();
+    ui->customPlot->addGraph();
+
     ui->customPlot->graph(0)->setPen(QColor(Qt::red));
-    QVector <double> x(200), y(200);
-    for (uint16_t i = 0; i < 200; i++) {
-        x[i] = i;
-        y[i] = 2*i;
-    }
-    ui->customPlot->graph(0)->setData(x, y);
-    ui->customPlot->graph(0)->rescaleAxes();
-    ui->customPlot->replot();
+    ui->customPlot->graph(1)->setPen(QColor(Qt::blue));
+    ui->customPlot->graph(2)->setPen(QColor(Qt::cyan));
+    ui->customPlot->graph(3)->setPen(QColor(Qt::green));
+    ui->customPlot->graph(4)->setPen(QColor(Qt::black));
+    ui->customPlot->graph(5)->setPen(QColor(Qt::magenta));
+    ui->customPlot->graph(6)->setPen(QColor(Qt::gray));
+    ui->customPlot->graph(7)->setPen(QColor(Qt::darkYellow));
 }
 
 MainWindow::~MainWindow()
@@ -58,13 +65,36 @@ void MainWindow::handleNewDeviceData()
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
     static double lastPointKey = 0;
-    if (key-lastPointKey > 0.002) // at most add point every 2 ms
-    {
+
         ui->customPlot->graph(0)->addData(key, device->phaseA);
-        lastPointKey = key;
-        ui->customPlot->yAxis->rescale();
+        ui->customPlot->graph(1)->addData(key, device->phaseB);
+        ui->customPlot->graph(2)->addData(key, device->phaseC);
+        ui->customPlot->graph(3)->addData(key, device->neutral);
+
+//        ui->customPlot->graph(4)->addData(key, device->current);
+//        ui->customPlot->graph(4)->rescaleValueAxis(false, true);
+
+////        ui->customPlot->graph(5)->addData(key, device->voltage);
+//        ui->customPlot->graph(6)->addData(key, device->throttle);
+//        ui->customPlot->graph(6)->rescaleValueAxis(false, true);
+
+//        ui->customPlot->graph(7)->addData(key, device->commutationFrequency);
+
+
+
+            if (key-lastPointKey > 0.010) // at most add point every 2 ms
+            {
+
         ui->customPlot->xAxis->setRange(key, 5, Qt::AlignRight);
-        ui->customPlot->replot();
+
+        ui->customPlot->graph(0)->rescaleValueAxis(false, true);
+        ui->customPlot->graph(1)->rescaleValueAxis(true, true);
+        ui->customPlot->graph(2)->rescaleValueAxis(true, true);
+        ui->customPlot->graph(3)->rescaleValueAxis(true, true);
+
+        ui->customPlot->replot(QCustomPlot::rpQueuedReplot);
+        lastPointKey = key;
+
     }
 
 }
