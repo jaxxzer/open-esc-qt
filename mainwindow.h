@@ -35,5 +35,7 @@ private:
 
     QVector<double> x, phaseASamples, phaseBSamples, phaseCSamples;
     void handleNewDeviceData();
+
+    QStringListModel registerModel;
 };
 #endif // MAINWINDOW_H

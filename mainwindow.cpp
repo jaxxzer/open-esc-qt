@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+#include <qcustomplot.h>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , device(nullptr)
+    , registerModel(this)
 {
     ui->setupUi(this);
 
@@ -15,10 +17,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->customPlot->addGraph();
     ui->customPlot->addGraph();
     ui->customPlot->addGraph();
+    ui->customPlot->addGraph(0, ui->customPlot->yAxis2);
     ui->customPlot->addGraph();
     ui->customPlot->addGraph();
     ui->customPlot->addGraph();
-    ui->customPlot->addGraph();
+    ui->customPlot->yAxis2->setVisible(true);
 
     ui->customPlot->graph(0)->setPen(QColor(Qt::red));
     ui->customPlot->graph(1)->setPen(QColor(Qt::blue));
@@ -28,6 +31,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->customPlot->graph(5)->setPen(QColor(Qt::magenta));
     ui->customPlot->graph(6)->setPen(QColor(Qt::gray));
     ui->customPlot->graph(7)->setPen(QColor(Qt::darkYellow));
+
+    QStringList list;
+    list << "1" << "fuck3" << "asdf";
+
+    registerModel.setStringList(list);
+    ui->tableView->setModel(&registerModel);
 }
 
 MainWindow::~MainWindow()
@@ -71,10 +80,9 @@ void MainWindow::handleNewDeviceData()
         ui->customPlot->graph(2)->addData(key, device->phaseC);
         ui->customPlot->graph(3)->addData(key, device->neutral);
 
-//        ui->customPlot->graph(4)->addData(key, device->current);
-//        ui->customPlot->graph(4)->rescaleValueAxis(false, true);
+        ui->customPlot->graph(4)->addData(key, device->current);
 
-////        ui->customPlot->graph(5)->addData(key, device->voltage);
+        ui->customPlot->graph(5)->addData(key, device->voltage);
 //        ui->customPlot->graph(6)->addData(key, device->throttle);
 //        ui->customPlot->graph(6)->rescaleValueAxis(false, true);
 
@@ -91,9 +99,12 @@ void MainWindow::handleNewDeviceData()
         ui->customPlot->graph(1)->rescaleValueAxis(true, true);
         ui->customPlot->graph(2)->rescaleValueAxis(true, true);
         ui->customPlot->graph(3)->rescaleValueAxis(true, true);
+        ui->customPlot->graph(4)->rescaleValueAxis(false, true);
+        ui->customPlot->graph(5)->rescaleValueAxis(true, true);
+//        ui->customPlot->graph(6)->rescaleValueAxis(true, true);
+//        ui->customPlot->graph(7)->rescaleValueAxis(true, true);
 
         ui->customPlot->replot(QCustomPlot::rpQueuedReplot);
-        lastPointKey = key;
 
     }
 

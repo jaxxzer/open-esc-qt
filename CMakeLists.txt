@@ -32,6 +32,8 @@ add_executable(open-esc-qt
     port-scanner.h
     qcustomplot.h
     qcustomplot.cpp
+    register-model.cpp
+    register-model.h
 )
 
 target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort Qt5::PrintSupport)
