@@ -37,3 +37,12 @@ add_executable(open-esc-qt
 )
 
 target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort Qt5::PrintSupport)
+
+set(PINGCPP_SRC ${PROJECT_SOURCE_DIR}/lib/ping-cpp/src)
+add_custom_target(generate
+  # generate ping-cpp message files
+  ${PINGCPP_SRC}/generate/generate-message.py --output-dir ${PINGCPP_SRC}/message
+  COMMENT "generating ping-cpp messages"
+)
+
+add_dependencies(open-esc-qt generate)

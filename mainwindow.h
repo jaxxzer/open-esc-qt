@@ -35,7 +35,12 @@ private:
 
     QVector<double> x, phaseASamples, phaseBSamples, phaseCSamples;
     void handleNewDeviceData();
+    QVector<RegisterModel::register_t> registerList;
 
-    QStringListModel registerModel;
+    RegisterModel registerModel;
+
+    QTimer replotTimer;
+
+    void readDeviceRegisters();
 };
 #endif // MAINWINDOW_H

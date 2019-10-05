@@ -1,15 +1,24 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+#include <register-model.h>
+bool lockkk;
+
 #include <qcustomplot.h>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , device(nullptr)
-    , registerModel(this)
+    , registerModel(this, &registerList)
+    , replotTimer(this)
 {
     ui->setupUi(this);
 
+    connect(ui->horizontalSlider, &QSlider::valueChanged, device, &Device::setThrottle);
+    connect(ui->horizontalSlider, &QSlider::valueChanged, [&](int value) {
+        ui->label_3->setText(QString::number(value));
+        device->setThrottle(value);
+    });
     connect(&portScanner, &PortScanner::scanUpdate, this, &MainWindow::onPortScanFinished);
     portScanner.startScanning(500);
 
@@ -29,14 +38,37 @@ MainWindow::MainWindow(QWidget *parent)
     ui->customPlot->graph(3)->setPen(QColor(Qt::green));
     ui->customPlot->graph(4)->setPen(QColor(Qt::black));
     ui->customPlot->graph(5)->setPen(QColor(Qt::magenta));
-    ui->customPlot->graph(6)->setPen(QColor(Qt::gray));
+    ui->customPlot->graph(6)->setPen(QColor(Qt::darkRed));
     ui->customPlot->graph(7)->setPen(QColor(Qt::darkYellow));
 
-    QStringList list;
-    list << "1" << "fuck3" << "asdf";
+//    QStringList list;
+//    list << "1" << "fuck3" << "asdf";
 
-    registerModel.setStringList(list);
+//    registerModel.setStringList(list);
+//    ui->tableView->setModel(&registerModel);
+
+
+    registerList.append({0x01, "one", 100});
+    registerList.append({0x02, "two", 4});
+    registerList.append({0x03, "three", 6});
     ui->tableView->setModel(&registerModel);
+
+    lockkk = false;
+//    connect(&replotTimer, &QTimer::timeout, [&](){
+//        lockkk = true;
+//        static QTime time(QTime::currentTime());
+//        // calculate two new data points:
+//        double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
+//        ui->customPlot->xAxis->setRange(key, 5, Qt::AlignRight);
+
+//        ui->customPlot->graph(0)->rescaleValueAxis(false, true);
+//        ui->customPlot->graph(1)->rescaleValueAxis(true, true);
+//        ui->customPlot->graph(2)->rescaleValueAxis(true, true);
+//        ui->customPlot->graph(3)->rescaleValueAxis(true, true);
+//        ui->customPlot->graph(4)->rescaleValueAxis(false, true);
+//        ui->customPlot->graph(5)->rescaleValueAxis(true, true);
+//        ui->customPlot->replot(QCustomPlot::rpQueuedReplot);
+//    });
 }
 
 MainWindow::~MainWindow()
@@ -56,14 +88,23 @@ void MainWindow::on_serialConnectButton_clicked()
                 portScanner.stopScanning();
                 device = new Device(availablePort);
                 connect(device, &Device::newData, this, &MainWindow::handleNewDeviceData);
+                readDeviceRegisters();
                 if (device->open()) {
                     ui->label->setText(availablePort.portName());
                     ui->serialConnectButton->setText("disconnect");
                     device->requestDeviceInformation();
+                    replotTimer.start(40);
+
                 }
             }
         }
     }
+}
+
+void MainWindow::readDeviceRegisters()
+{
+
+//    ui->tableView->setModel();
 }
 
 void MainWindow::handleNewDeviceData()
@@ -75,15 +116,15 @@ void MainWindow::handleNewDeviceData()
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
     static double lastPointKey = 0;
 
-        ui->customPlot->graph(0)->addData(key, device->phaseA);
-        ui->customPlot->graph(1)->addData(key, device->phaseB);
-        ui->customPlot->graph(2)->addData(key, device->phaseC);
-        ui->customPlot->graph(3)->addData(key, device->neutral);
+//        ui->customPlot->graph(0)->addData(key, device->phaseA);
+//        ui->customPlot->graph(1)->addData(key, device->phaseB);
+//        ui->customPlot->graph(2)->addData(key, device->phaseC);
+//        ui->customPlot->graph(3)->addData(key, device->neutral);
 
         ui->customPlot->graph(4)->addData(key, device->current);
 
-        ui->customPlot->graph(5)->addData(key, device->voltage);
-//        ui->customPlot->graph(6)->addData(key, device->throttle);
+//        ui->customPlot->graph(5)->addData(key, device->voltage);
+        ui->customPlot->graph(6)->addData(key, device->throttle);
 //        ui->customPlot->graph(6)->rescaleValueAxis(false, true);
 
 //        ui->customPlot->graph(7)->addData(key, device->commutationFrequency);
@@ -91,20 +132,25 @@ void MainWindow::handleNewDeviceData()
 
 
             if (key-lastPointKey > 0.010) // at most add point every 2 ms
+
+                ui->customPlot->xAxis->setRange(key, 5, Qt::AlignRight);
+
+//                ui->customPlot->graph(0)->rescaleValueAxis(false, true);
+//                ui->customPlot->graph(1)->rescaleValueAxis(true, true);
+//                ui->customPlot->graph(2)->rescaleValueAxis(true, true);
+//                ui->customPlot->graph(3)->rescaleValueAxis(false, true);
+                ui->customPlot->graph(4)->rescaleValueAxis(false, true);
+//                ui->customPlot->graph(5)->rescaleValueAxis(true, true);
+                ui->customPlot->graph(6)->rescaleValueAxis(false, true);
+
+                ui->customPlot->replot();
             {
 
-        ui->customPlot->xAxis->setRange(key, 5, Qt::AlignRight);
 
-        ui->customPlot->graph(0)->rescaleValueAxis(false, true);
-        ui->customPlot->graph(1)->rescaleValueAxis(true, true);
-        ui->customPlot->graph(2)->rescaleValueAxis(true, true);
-        ui->customPlot->graph(3)->rescaleValueAxis(true, true);
-        ui->customPlot->graph(4)->rescaleValueAxis(false, true);
-        ui->customPlot->graph(5)->rescaleValueAxis(true, true);
 //        ui->customPlot->graph(6)->rescaleValueAxis(true, true);
 //        ui->customPlot->graph(7)->rescaleValueAxis(true, true);
 
-        ui->customPlot->replot(QCustomPlot::rpQueuedReplot);
+//        ui->customPlot->replot(QCustomPlot::rpQueuedReplot);
 
     }
 

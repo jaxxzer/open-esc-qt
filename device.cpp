@@ -5,12 +5,20 @@
 
 #include <ping-message-common.h>
 #include <ping-message-openesc.h>
+#include <register-model.h>
 
 Device::Device(QSerialPortInfo info)
 {
 
     handle = new ComHandle(info);
     connect(handle->serialPort, &QSerialPort::readyRead, this, &Device::consumeData);
+
+    connect(&sendThrottleTimer, &QTimer::timeout, [&] {
+        setThrottle(_throttle);
+    });
+    sendThrottleTimer.start(20);
+
+
 }
 
 bool Device::open()
@@ -78,7 +86,7 @@ void Device::handleMessage(ping_message* message)
         throttle = msg->throttle();
         voltage = msg->voltage();
         current = msg->current();
-        commutationFrequency = msg->commutation_frequency();
+        commutationFrequency = msg->commutation_period();
 
     }
         break;
@@ -88,4 +96,14 @@ void Device::handleMessage(ping_message* message)
     }
     emit newData();
 
+}
+void Device::setThrottle(uint16_t throttle) {
+    if (throttle > 0xfff) {
+        throttle = 0xfff;
+    }
+    _throttle = throttle;
+    openesc_set_throttle m;
+    m.set_throttle_signal(_throttle);
+    m.updateChecksum();
+    handle->write(m.msgData, m.msgDataLength());
 }
