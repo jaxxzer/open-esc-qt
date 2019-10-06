@@ -8,17 +8,37 @@
 #include <register-model.h>
 
 Device::Device(QSerialPortInfo info)
+    : registerModel(this, &registerList, (uint8_t*)&deviceGlobal)
 {
 
     handle = new ComHandle(info);
     connect(handle->serialPort, &QSerialPort::readyRead, this, &Device::consumeData);
 
     connect(&sendThrottleTimer, &QTimer::timeout, [&] {
-        setThrottle(_throttle);
+//        setThrottle(_throttle);
+        readRegisters();
     });
-    sendThrottleTimer.start(20);
+    sendThrottleTimer.start(50);
+
+    registerList.append({0x00, "adc0", RegisterModel::REG_TYPE_UINT16});
+    registerList.append({0x02, "adc1", RegisterModel::REG_TYPE_UINT16});
+    registerList.append({0x04, "adc2", RegisterModel::REG_TYPE_UINT16});
+    registerList.append({0x06, "adc3", RegisterModel::REG_TYPE_UINT16});
+    registerList.append({0x08, "adc4", RegisterModel::REG_TYPE_UINT16});
+    registerList.append({0x0a, "adc5", RegisterModel::REG_TYPE_UINT16});
+    registerList.append({0x0c, "adc6", RegisterModel::REG_TYPE_UINT16});
+    registerList.append({0x0e, "adc7", RegisterModel::REG_TYPE_UINT16});
+    registerList.append({0x10, "throttle", RegisterModel::REG_TYPE_UINT16});
 
 
+    connect(&registerModel, &RegisterModel::registerEdited, this, &Device::commitRegister);
+}
+void Device::readRegisters()
+{
+//    for (auto reg : registerList) {
+//        readRegister(reg.address);
+//    }
+    readRegisterMulti(0x0, 18);
 }
 
 bool Device::open()
@@ -26,6 +46,66 @@ bool Device::open()
     return handle->open();
 }
 
+void Device::commitRegister(uint16_t index)
+{
+    switch (registerList[index].type) {
+    case RegisterModel::REG_TYPE_BOOL:
+        writeRegisterMulti(registerList[index].address, 1);
+        break;
+    case RegisterModel::REG_TYPE_UINT8:
+        writeRegisterMulti(registerList[index].address, 1);
+        break;
+    case RegisterModel::REG_TYPE_UINT16:
+        writeRegisterMulti(registerList[index].address, 2);
+        break;
+    case RegisterModel::REG_TYPE_UINT32:
+        writeRegisterMulti(registerList[index].address, 4);
+        break;
+    }
+}
+void Device::writeRegister(uint16_t address, uint32_t value)
+{
+
+    openesc_set_register m;
+    m.set_address(address);
+    m.set_value(value);
+    m.updateChecksum();
+    writeMessage(m);
+}
+
+void Device::writeRegisterMulti(uint16_t address, uint16_t length)
+{
+    openesc_set_register_multi m(length);
+    m.set_address(address);
+    m.set_data_length(length);
+    for (uint16_t i = 0; i < length; i++) {
+        m.set_data_at(i, ((uint8_t*)&deviceGlobal)[i]);
+    }
+    m.updateChecksum();
+    writeMessage(m);
+}
+
+void Device::writeMessage(ping_message message)
+{
+    handle->write(message.msgData, message.msgDataLength());
+}
+
+void Device::readRegister(uint16_t address)
+{
+    openesc_read_register m;
+    m.set_address(address);
+    m.updateChecksum();
+    writeMessage(m);
+}
+
+void Device::readRegisterMulti(uint16_t address, uint16_t count)
+{
+    openesc_read_register_multi m;
+    m.set_address(address);
+    m.set_count(count);
+    m.updateChecksum();
+    writeMessage(m);
+}
 void Device::requestProtocolVersion()
 {
     requestMessage(CommonId::PROTOCOL_VERSION);
@@ -52,7 +132,11 @@ void Device::consumeData()
             handleMessage(&parser.parser.rxMessage);
             switch (parser.parser.rxMessage.message_id()) {
             case CommonId::DEVICE_INFORMATION:
+
                  device_type = ((common_device_information)parser.parser.rxMessage).device_type();
+                break;
+            default:
+                break;
             }
 
             device_id = parser.parser.rxMessage.source_device_id();
@@ -88,6 +172,23 @@ void Device::handleMessage(ping_message* message)
         current = msg->current();
         commutationFrequency = msg->commutation_period();
 
+    }
+        break;
+    case OpenescId::REGISTER:
+    {
+        openesc_register* m = (openesc_register*)message;
+        ((uint8_t*)&deviceGlobal)[m->address()] = m->value();
+        emit registerUpdate();
+    }
+    break;
+    case OpenescId::REGISTER_MULTI:
+    {
+        openesc_register_multi* m = (openesc_register_multi*)message;
+        for (int i = 0; i < m->data_length(); i++) {
+            ((uint8_t*)&deviceGlobal)[i] = m->data()[i];
+        }
+        registerModel.refresh();
+        emit registerUpdate();
     }
         break;
     default:

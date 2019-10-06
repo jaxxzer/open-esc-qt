@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , device(nullptr)
-    , registerModel(this, &registerList)
     , replotTimer(this)
 {
     ui->setupUi(this);
@@ -48,10 +47,10 @@ MainWindow::MainWindow(QWidget *parent)
 //    ui->tableView->setModel(&registerModel);
 
 
-    registerList.append({0x01, "one", 100});
-    registerList.append({0x02, "two", 4});
-    registerList.append({0x03, "three", 6});
-    ui->tableView->setModel(&registerModel);
+//    registerList.append({0x01, "one", 100});
+//    registerList.append({0x02, "two", 4});
+//    registerList.append({0x03, "three", 6});
+//    ui->tableView->setModel(&registerModel);
 
     lockkk = false;
 //    connect(&replotTimer, &QTimer::timeout, [&](){
@@ -94,6 +93,9 @@ void MainWindow::on_serialConnectButton_clicked()
                     ui->serialConnectButton->setText("disconnect");
                     device->requestDeviceInformation();
                     replotTimer.start(40);
+                    ui->tableView->setModel(device->getRegisterModel());
+                    device->readRegisters();
+
 
                 }
             }

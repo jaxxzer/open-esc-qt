@@ -35,9 +35,6 @@ private:
 
     QVector<double> x, phaseASamples, phaseBSamples, phaseCSamples;
     void handleNewDeviceData();
-    QVector<RegisterModel::register_t> registerList;
-
-    RegisterModel registerModel;
 
     QTimer replotTimer;
 
