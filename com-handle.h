@@ -17,6 +17,8 @@ public:
 
     QSerialPort* serialPort;
 
+signals:
+    void closed();
 };
 
 #endif // PINGDEVICE_H

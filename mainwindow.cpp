@@ -81,26 +81,46 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_serialConnectButton_clicked()
 {
-    for (auto availablePort : portScanner.availablePorts) {
-        if (availablePort.portName() == ui->serialComboBox->currentText()) {
-            if (!device) {
-                portScanner.stopScanning();
-                device = new Device(availablePort);
-                connect(device, &Device::newData, this, &MainWindow::handleNewDeviceData);
-                readDeviceRegisters();
-                if (device->open()) {
-                    ui->label->setText(availablePort.portName());
-                    ui->serialConnectButton->setText("disconnect");
-                    device->requestDeviceInformation();
-                    replotTimer.start(40);
-                    ui->tableView->setModel(device->getRegisterModel());
-                    device->readRegisters();
+//    if (connectState == CONNECT) {
+        for (auto availablePort : portScanner.availablePorts) {
+            if (availablePort.portName() == ui->serialComboBox->currentText()) {
+                if (!device) {
+                    portScanner.stopScanning();
+                    device = new Device(availablePort);
+                    connect(device, &Device::newData, this, &MainWindow::handleNewDeviceData);
+                    connect(device, &Device::closed, this, &MainWindow::deviceClosed);
+                    readDeviceRegisters();
+                    if (device->open()) {
+                        ui->label->setText(availablePort.portName());
+                        ui->serialConnectButton->setText("disconnect");
+                        device->requestDeviceInformation();
+                        replotTimer.start(40);
+                        ui->tableView->setModel(device->getRegisterModel());
+                        device->readRegisters();
 
-
+//                        connectState = DISCONNECT;
+                    }
                 }
             }
         }
+
+//    } else if (connectState == DISCONNECT) {
+
+//    }
+
+    //assert_not_reached();
+
+}
+
+void MainWindow::deviceClosed()
+{
+    if (device) {
+        delete(device);
+        device = nullptr;
     }
+
+    portScanner.startScanning();
+    ui->serialConnectButton->setText("connect");
 }
 
 void MainWindow::readDeviceRegisters()

@@ -53,7 +53,7 @@ QVariant RegisterModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags RegisterModel::flags(const QModelIndex &index) const
 {
-    if (index.column() == 1) {
+    if (index.column() == 1 && (*registerList)[index.row()].mode == REG_MODE_READWRITE) {
         return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
     }
     return QAbstractItemModel::flags(index);
@@ -62,6 +62,9 @@ Qt::ItemFlags RegisterModel::flags(const QModelIndex &index) const
 bool RegisterModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (role == Qt::EditRole) {
+        if ((*registerList)[index.row()].mode == REG_MODE_READONLY) {
+            return false;
+        }
         switch ((*registerList)[index.row()].type) {
         case REG_TYPE_BOOL:
             if (((bool*)_data)[(*registerList)[index.row()].address] == value.toBool()) {
@@ -80,18 +83,18 @@ bool RegisterModel::setData(const QModelIndex &index, const QVariant &value, int
 
             return true;
         case REG_TYPE_UINT16:
-            if (((uint16_t*)_data)[(*registerList)[index.row()].address] == value.toInt()) {
+            if ((uint16_t&)_data[(*registerList)[index.row()].address] == value.toInt()) {
                 return false;
             }
-            ((uint16_t*)_data)[(*registerList)[index.row()].address] = value.toInt();
+            (uint16_t&)_data[(*registerList)[index.row()].address] = value.toInt();
             emit registerEdited(index.row());
 
             return true;
         case REG_TYPE_UINT32:
-            if (((uint32_t*)_data)[(*registerList)[index.row()].address] == value.toInt()) {
+            if ((uint32_t&)_data[(*registerList)[index.row()].address] == value.toInt()) {
                 return false;
             }
-            ((uint32_t*)_data)[(*registerList)[index.row()].address] = value.toInt();
+            (uint32_t&)_data[(*registerList)[index.row()].address] = value.toInt();
             emit registerEdited(index.row());
 
             return true;

@@ -25,6 +25,7 @@ public:
         uint16_t address;
         QString name;
         register_type_e type;
+        register_mode_e mode;
     } register_t;
 
     RegisterModel(QObject* parent = nullptr, QVector<register_t>* _registerList = nullptr, uint8_t* data = nullptr);
@@ -34,7 +35,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
-    void refresh() { emit dataChanged(index(0,1), index(registerList->size(),1), QVector<int>({Qt::EditRole})); }
+    void refresh(int first, int last) { emit dataChanged(index(first,1), index(last,1), QVector<int>({Qt::EditRole})); }
     bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) override;
     bool insertColumns(int row, int count, const QModelIndex& parent = QModelIndex()) override;
     bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) override;

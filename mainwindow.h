@@ -22,6 +22,14 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    typedef enum {
+        DISCONNECTED,
+        CONNECTED,
+    } connect_e;
+
+    connect_e connectState;
+    void deviceClosed();
+
 private slots:
 //    void on_serialComboBox_activated(QString portName);
     void on_serialConnectButton_clicked();

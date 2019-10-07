@@ -1,5 +1,6 @@
 #include <com-handle.h>
 
+#include <QDebug>
 ComHandle::ComHandle(QSerialPortInfo p)
 {
     serialPort = new QSerialPort(p);
@@ -17,11 +18,15 @@ void ComHandle::close()
     if (serialPort) {
         serialPort->close();
     }
+    emit closed();
 }
 
 void ComHandle::write(uint8_t* data, uint16_t length)
 {
     if (serialPort) {
         serialPort->write((char*)data, length);
+        if (serialPort->error() != QSerialPort::NoError) {
+            close();
+        }
     }
 }

@@ -26,6 +26,10 @@ public:
 
     typedef struct {
       uint16_t adc_buffer[ADC_NUM_CHANNELS];
+      uint16_t throttle;
+      uint8_t direction;
+      uint8_t direction_mode;
+      uint16_t startup_throttle;
     } global_t;
 
     global_t deviceGlobal;
@@ -55,6 +59,9 @@ public:
 
     void writeMessage(ping_message message);
     RegisterModel* getRegisterModel() { return &registerModel; }
+
+    void close();
+
 private:
     uint16_t _throttle;
     void write(uint8_t* data, uint16_t length);
@@ -67,6 +74,7 @@ private:
 signals:
     void newData();
     void registerUpdate();
+    void closed();
 };
 
 #endif // DEVICE_H
