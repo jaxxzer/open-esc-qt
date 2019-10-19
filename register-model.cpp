@@ -21,7 +21,7 @@ int RegisterModel::rowCount(const QModelIndex& parent) const
 int RegisterModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent)
-    return 3;
+    return 4;
 }
 
 QVariant RegisterModel::data(const QModelIndex &index, int role) const
@@ -29,7 +29,7 @@ QVariant RegisterModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
         case 0:
-            return (*registerList)[index.row()].address;
+            return QString("0x") + QString::number((*registerList)[index.row()].address, 16);
         case 1:
             switch ((*registerList)[index.row()].type) {
             case REG_TYPE_BOOL:
@@ -45,7 +45,15 @@ QVariant RegisterModel::data(const QModelIndex &index, int role) const
         case 2:
             return (*registerList)[index.row()].name;
         default:
-            return QString("error");
+            break;
+        }
+    } else if (role == Qt::CheckStateRole) {
+        if (index.column() == 3) {
+            if ((*registerList)[index.row()].plotEnabled) {
+                return Qt::Checked;
+            } else {
+                return Qt::Unchecked;
+            }
         }
     }
     return QVariant();
@@ -53,15 +61,19 @@ QVariant RegisterModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags RegisterModel::flags(const QModelIndex &index) const
 {
+    if (index.column() == 3) {
+        return Qt::ItemIsUserCheckable | QAbstractItemModel::flags(index);
+    }
     if (index.column() == 1 && (*registerList)[index.row()].mode == REG_MODE_READWRITE) {
         return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
     }
+
     return QAbstractItemModel::flags(index);
 }
 
 bool RegisterModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (role == Qt::EditRole) {
+    if ((role == Qt::EditRole) && (index.column() == 1)) {
         if ((*registerList)[index.row()].mode == REG_MODE_READONLY) {
             return false;
         }
@@ -99,6 +111,10 @@ bool RegisterModel::setData(const QModelIndex &index, const QVariant &value, int
 
             return true;
         }
+    } else if ((role == Qt::CheckStateRole) && (index.column() == 3)) {
+        (*registerList)[index.row()].plotEnabled = value.toBool();
+        emit plotEnabledChanged(index.row());
+        return true;
     }
     return false;
 }

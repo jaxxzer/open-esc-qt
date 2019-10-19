@@ -16,12 +16,13 @@ find_package(Qt5 COMPONENTS SerialPort REQUIRED)
 find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/lib/ping-cpp/src/message)
-
 add_executable(open-esc-qt
     com-handle.cpp
     com-handle.h
     com-parser.cpp
     com-parser.h
+    combobox-delegate.cpp
+    combobox-delegate.h
     device.cpp
     device.h
     main.cpp
@@ -36,7 +37,8 @@ add_executable(open-esc-qt
     register-model.h
 )
 
-target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort Qt5::PrintSupport)
+target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort Qt5::PrintSupport GL)
+add_definitions(-DQCUSTOMPLOT_USE_OPENGL)
 
 set(PINGCPP_SRC ${PROJECT_SOURCE_DIR}/lib/ping-cpp/src)
 add_custom_target(generate

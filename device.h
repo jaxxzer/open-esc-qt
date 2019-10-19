@@ -61,19 +61,18 @@ public:
     RegisterModel* getRegisterModel() { return &registerModel; }
 
     void close();
+    QVector<RegisterModel::register_t> registerList;
+    RegisterModel registerModel;
 
 private:
-    uint16_t _throttle;
+    uint16_t _throttle = 0;
     void write(uint8_t* data, uint16_t length);
     QTimer sendThrottleTimer;
-    QVector<RegisterModel::register_t> registerList;
 
-    RegisterModel registerModel;
 
 
 signals:
     void newData();
-    void registerUpdate();
     void closed();
 };
 

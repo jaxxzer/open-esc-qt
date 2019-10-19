@@ -7,6 +7,7 @@
 #include <ping-message-openesc.h>
 #include <register-model.h>
 
+
 Device::Device(QSerialPortInfo info)
     : registerModel(this, &registerList, (uint8_t*)&deviceGlobal)
 {
@@ -16,25 +17,28 @@ Device::Device(QSerialPortInfo info)
 
     connect(handle, &ComHandle::closed, this, &Device::closed);
     connect(&sendThrottleTimer, &QTimer::timeout, [&] {
-//        setThrottle(_throttle);
+        setThrottle(_throttle);
         readRegisters();
     });
-    sendThrottleTimer.start(50);
+    sendThrottleTimer.start(4);
 
-    registerList.append({0x00, "adc0", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY});
-    registerList.append({0x02, "adc1", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY});
-    registerList.append({0x04, "adc2", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY});
-    registerList.append({0x06, "adc3", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY});
-    registerList.append({0x08, "adc4", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY});
-    registerList.append({0x0a, "adc5", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY});
-    registerList.append({0x0c, "adc6", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY});
-    registerList.append({0x0e, "adc7", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY});
-    registerList.append({0x10, "throttle", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READWRITE});
-    registerList.append({0x12, "direction", RegisterModel::REG_TYPE_UINT8, RegisterModel::REG_MODE_READONLY});
-    registerList.append({0x13, "direction mode", RegisterModel::REG_TYPE_UINT8, RegisterModel::REG_MODE_READWRITE});
-    registerList.append({0x14, "startup throttle", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READWRITE});
+
+    registerList.append({0x00, "adcPhaseC", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY, false});
+    registerList.append({0x02, "adcPhaseNeutral", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY, false});
+    registerList.append({0x04, "adcBusVoltage", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY, false});
+    registerList.append({0x06, "adcPhaseA", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY, false});
+    registerList.append({0x08, "adcPhaseB", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY, false});
+    registerList.append({0x0a, "adcBusCurrent", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY, false});
+    registerList.append({0x0c, "adcCPUTemperature", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY, false});
+    registerList.append({0x0e, "adc7", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READONLY, false});
+    registerList.append({0x10, "throttle", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READWRITE, false});
+    registerList.append({0x12, "direction", RegisterModel::REG_TYPE_UINT8, RegisterModel::REG_MODE_READONLY, false});
+    registerList.append({0x13, "direction mode", RegisterModel::REG_TYPE_UINT8, RegisterModel::REG_MODE_READWRITE, false});
+    registerList.append({0x14, "startup throttle", RegisterModel::REG_TYPE_UINT16, RegisterModel::REG_MODE_READWRITE, false});
 
     connect(&registerModel, &RegisterModel::registerEdited, this, &Device::commitRegister);
+
+
 }
 void Device::readRegisters()
 {
@@ -148,6 +152,11 @@ void Device::consumeData()
     }
 }
 
+void Device::close()
+{
+    handle->close();
+}
+
 void Device::write(uint8_t *data, uint16_t length)
 {
     if (handle) {
@@ -181,7 +190,6 @@ void Device::handleMessage(ping_message* message)
     {
         openesc_register* m = (openesc_register*)message;
         ((uint8_t*)&deviceGlobal)[m->address()] = m->value();
-        emit registerUpdate();
     }
     break;
     case OpenescId::REGISTER_MULTI:
@@ -191,14 +199,14 @@ void Device::handleMessage(ping_message* message)
             ((uint8_t*)&deviceGlobal)[m->address() + i] = m->data()[i];
         }
         registerModel.refresh(m->address(), m->address() + m->data_length());
-        emit registerUpdate();
+//        registerModel.refreshAll();
     }
         break;
     default:
         break;
 
     }
-    emit newData();
+    //emit newData();
 
 }
 

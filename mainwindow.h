@@ -23,8 +23,8 @@ public:
     ~MainWindow();
 
     typedef enum {
-        DISCONNECTED,
-        CONNECTED,
+        DISCONNECT,
+        CONNECT,
     } connect_e;
 
     connect_e connectState;
@@ -34,6 +34,7 @@ private slots:
 //    void on_serialComboBox_activated(QString portName);
     void on_serialConnectButton_clicked();
     void onPortScanFinished(QList<QSerialPortInfo>);
+    void onPlotEnabledChanged(int index);
 
 private:
     Ui::MainWindow *ui;
