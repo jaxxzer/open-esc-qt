@@ -15,6 +15,9 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt5 COMPONENTS SerialPort REQUIRED)
 find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
 
+set(PINGCPP_SRC ${PROJECT_SOURCE_DIR}/lib/ping-cpp/src)
+set(PINGPROTOCOL_SRC ${PROJECT_SOURCE_DIR}/lib/ping-cpp/lib/ping-protocol/src)
+
 include_directories(${PROJECT_SOURCE_DIR}/lib/ping-cpp/src/message)
 add_executable(open-esc-qt
     com-handle.cpp
@@ -35,6 +38,7 @@ add_executable(open-esc-qt
     qcustomplot.cpp
     register-model.cpp
     register-model.h
+    ${PINGCPP_SRC}/message/ping-message-openesc.h
 )
 
 target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort Qt5::PrintSupport GL)
@@ -48,3 +52,9 @@ add_custom_target(generate
 )
 
 add_dependencies(open-esc-qt generate)
+
+add_custom_command(OUTPUT ${PINGCPP_SRC}/message/ping-message-openesc.h
+  # generate ping-cpp message files
+  COMMAND ${PINGPROTOCOL_SRC}/generator.py --definition ${PROJECT_SOURCE_DIR}/openesc.json --template ${PINGCPP_SRC}/generate/templates/ping-message-.h.in > ${PINGCPP_SRC}/message/ping-message-openesc.h
+  COMMENT "generating openesc messages"
+)
