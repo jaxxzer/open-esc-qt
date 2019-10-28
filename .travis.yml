@@ -16,6 +16,7 @@ script:
   - make -j$(nproc)
   - make fix-ui
   - make -j$(nproc)
+  - mkdir -p appdir
   - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
   - wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
