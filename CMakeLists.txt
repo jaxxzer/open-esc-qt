@@ -41,8 +41,9 @@ add_executable(open-esc-qt
     ${PINGCPP_SRC}/message/ping-message-openesc.h
 )
 
-target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort Qt5::PrintSupport GL)
-add_definitions(-DQCUSTOMPLOT_USE_OPENGL)
+target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort Qt5::PrintSupport)
+# target_link_libraries(open-esc-qt PRIVATE Qt5::Widgets Qt5::SerialPort Qt5::PrintSupport GL)
+# add_definitions(-DQCUSTOMPLOT_USE_OPENGL)
 
 set(PINGCPP_SRC ${PROJECT_SOURCE_DIR}/lib/ping-cpp/src)
 add_custom_target(generate
