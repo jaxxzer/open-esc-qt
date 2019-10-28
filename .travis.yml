@@ -1,0 +1,9 @@
+dist: xenial
+
+language: minimal
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake ..
+  - make
