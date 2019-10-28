@@ -5,7 +5,7 @@
 bool lockkk;
 
 #include <combobox-delegate.h>
-
+#include <QRandomGenerator>
 
 #include <qcustomplot.h>
 MainWindow::MainWindow(QWidget *parent)
@@ -29,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
     for (uint8_t i = 0; i < 20; i++) {
 
         ui->customPlot->addGraph()->setVisible(false);
+        ui->customPlot->graph(i)->setPen(QColor(QRandomGenerator::global()->bounded(0,255), QRandomGenerator::global()->bounded(0, 255), QRandomGenerator::global()->bounded(0,255)));
+
     //    ui->customPlot->addGraph(0, ui->customPlot->yAxis2)->setVisible(false);
 
     }
