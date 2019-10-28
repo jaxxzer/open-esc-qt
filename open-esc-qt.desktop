@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Application
+Exec=open-esc-qt
+Icon=default
+Comment=Edit this default file
+Terminal=false
+Categories=Qt;
+X-AppImage-Version=141156a
