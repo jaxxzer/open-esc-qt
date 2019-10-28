@@ -9,7 +9,7 @@ script:
   - sudo apt install python3 python3-pip
   - pip3 install --user jinja2
   # todo install only what is needed
-  - sudo apt install qt512-meta-full
+  - sudo apt install qt512base qt512serialport qt512-meta-minimal
   - mkdir -p build
   - cd build
   - cmake ..
