@@ -33,3 +33,18 @@ script:
   - cp ../open-esc-qt.desktop .
   - ./linuxdeployqt-continuous-x86_64.AppImage open-esc-qt -appimage -unsupported-allow-new-glibc -verbose=2
   - ldd lib/libQt5SerialPort.so.5
+
+before_deploy:
+  - git tag continuous-deployment -f
+  - git remote set-url origin https://${GITHUB_TOKEN}@github.com/jaxxzer/open-esc-qt
+  - git push origin continuous-deployment -f
+
+deploy:
+  provider: releases
+  api_key: ${GITHUB_TOKEN}
+  file_glob: true
+  file: build/*.AppImage
+  overwrite: true
+  skip_cleanup: true
+  on:
+    branch: master
