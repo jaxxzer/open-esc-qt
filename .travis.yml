@@ -12,7 +12,7 @@ script:
   - sudo apt install qt512base qt512serialport qt512-meta-minimal
   - mkdir -p build
   - cd build
-  - cmake ..
+  - cmake -DCMAKE_BUILD_TYPE:STRING=Release ..
   - make -j$(nproc)
   - make fix-ui
   - make -j$(nproc)
