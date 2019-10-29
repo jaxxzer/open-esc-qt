@@ -29,7 +29,9 @@ script:
   - cp ../open-esc-qt.desktop .
   - ./linuxdeployqt-continuous-x86_64.AppImage open-esc-qt -appimage -unsupported-allow-new-glibc -verbose=0
   - pwd
+  - mv open-esc-qt*.AppImage open-esc-qt.AppImage
   - ls
+  - cd ..
 
 before_deploy:
   - git tag continuous-deployment -f
@@ -39,7 +41,9 @@ before_deploy:
 deploy:
   provider: releases
   api_key: ${GITHUB_TOKEN}
+  file_glob: true
   file:
+    - build/open-esc-qt.AppImage
     - "com-handle.cpp"
     - "com-handle.h"
   overwrite: true
