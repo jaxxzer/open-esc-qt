@@ -4,7 +4,6 @@
 #include <register-model.h>
 bool lockkk;
 
-#include <combobox-delegate.h>
 #include <QRandomGenerator>
 
 #include <qcustomplot.h>
