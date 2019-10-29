@@ -24,8 +24,6 @@ add_executable(open-esc-qt
     com-handle.h
     com-parser.cpp
     com-parser.h
-    combobox-delegate.cpp
-    combobox-delegate.h
     device.cpp
     device.h
     main.cpp
