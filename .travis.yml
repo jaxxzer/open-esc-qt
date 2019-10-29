@@ -5,7 +5,7 @@ sudo: require
 addons:
   apt:
     sources:
-      - sourceline:'ppa:beineri/opt-qt-5.12.3-xenial'
+      - sourceline: 'ppa:beineri/opt-qt-5.12.2-xenial'
     packages:
       - qt512base qt512serialport qt512-meta-minimal
 script:
