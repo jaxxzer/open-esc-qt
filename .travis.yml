@@ -39,10 +39,9 @@ before_deploy:
 deploy:
   provider: releases
   api_key: ${GITHUB_TOKEN}
-  file_glob: true
   file:
-    - build/open-esc-qt*.AppImage
-    - com-handle.cpp
+    - "com-handle.cpp"
+    - "com-handle.h"
   overwrite: true
   skip_cleanup: true
   on:
