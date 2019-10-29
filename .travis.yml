@@ -1,21 +1,21 @@
 dist: xenial
 
 language: minimal
-sudo: require
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:beineri/opt-qt-5.12.3-xenial'
-    packages:
-      - qt512base qt512serialport qt512-meta-minimal
+# sudo: require
+# addons:
+#   apt:
+#     sources:
+#       - sourceline: 'ppa:beineri/opt-qt-5.12.3-xenial'
+#     packages:
+#       - qt512base qt512serialport qt512-meta-minimal
 script:
-  # - sudo add-apt-repository -y ppa:beineri/opt-qt-5.12.3-xenial
+  - sudo add-apt-repository -y ppa:beineri/opt-qt-5.12.3-xenial
   - sudo apt-get update
   - sudo apt-get install libgl-dev
   - sudo apt install python3 python3-pip
   - pip3 install --user jinja2
   # todo install only what is needed
-  # - sudo apt install qt512base qt512serialport qt512-meta-minimal
+  - sudo apt install qt512base qt512serialport qt512-meta-minimal
   - mkdir -p build
   - cd build
   - cmake -DCMAKE_BUILD_TYPE:STRING=Release ..
@@ -23,14 +23,10 @@ script:
   - make -j$(nproc)
   - wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-  # - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH;
-  - echo $PATH
   - export PATH=/opt/qt512/bin:$PATH
   - cp ../open-esc-qt.desktop .
   - ./linuxdeployqt-continuous-x86_64.AppImage open-esc-qt -appimage -unsupported-allow-new-glibc -verbose=0
-  - pwd
   - mv open-esc-qt*.AppImage open-esc-qt.AppImage
-  - ls
   - cd ..
 
 before_deploy:
@@ -44,8 +40,6 @@ deploy:
   file_glob: true
   file:
     - build/open-esc-qt.AppImage
-    - "com-handle.cpp"
-    - "com-handle.h"
   overwrite: true
   skip_cleanup: true
   on:
