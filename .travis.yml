@@ -26,12 +26,8 @@ script:
   # - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH;
   - echo $PATH
   - export PATH=/opt/qt512/bin:$PATH
-  - ldd open-esc-qt
-  - ls /opt/qt512/lib/
-  - ldd /opt/qt512/lib/libQt5SerialPort.so.5
   - cp ../open-esc-qt.desktop .
-  - ./linuxdeployqt-continuous-x86_64.AppImage open-esc-qt -appimage -unsupported-allow-new-glibc -verbose=2
-  - ldd lib/libQt5SerialPort.so.5
+  - ./linuxdeployqt-continuous-x86_64.AppImage open-esc-qt -appimage -unsupported-allow-new-glibc -verbose=0
 
 before_deploy:
   - git tag continuous-deployment -f
