@@ -28,6 +28,8 @@ script:
   - export PATH=/opt/qt512/bin:$PATH
   - cp ../open-esc-qt.desktop .
   - ./linuxdeployqt-continuous-x86_64.AppImage open-esc-qt -appimage -unsupported-allow-new-glibc -verbose=0
+  - pwd
+  - ls
 
 before_deploy:
   - git tag continuous-deployment -f

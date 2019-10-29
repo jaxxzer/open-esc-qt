@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Application
+Name=open-esc-qt
 Exec=open-esc-qt
 Icon=default
 Comment=Edit this default file
