@@ -24,6 +24,7 @@ script:
   - make -j$(nproc)
   - wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+  - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH;
   - ldd open-esc-qt
   - ls /opt/qt512/lib/
   - ldd /opt/qt512/lib/libQt5SerialPort.so.5
