@@ -22,4 +22,4 @@ script:
   - ls /opt/qt512/lib/
   - ldd /opt/qt512/lib/libQt5SerialPort.so.5
   - cp ../open-esc-qt.desktop .
-  - ./linuxdeployqt-continuous-x86_64.AppImage open-esc-qt -appimage
+  - ./linuxdeployqt-continuous-x86_64.AppImage open-esc-qt -appimage -unsupported-allow-new-glibc -verbose=2
