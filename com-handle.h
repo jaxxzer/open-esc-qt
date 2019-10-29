@@ -14,6 +14,7 @@ public:
     void close();
 
     void write(uint8_t* data, uint16_t length);
+    bool setLowLatency();
 
     QSerialPort* serialPort;
 
